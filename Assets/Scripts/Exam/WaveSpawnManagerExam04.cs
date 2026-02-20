@@ -3,7 +3,7 @@ using UnityEngine;
 public class WaveSpawnManagerExam04 : MonoBehaviour
 {
     public Wave[] waveConfigurations;
-    public WaveController waveController;
+    public WaveControllerExam04 WaveController;
 
     public bool enableWaveCycling;
 
@@ -12,15 +12,15 @@ public class WaveSpawnManagerExam04 : MonoBehaviour
 
     void Start()
     {
-        if (waveConfigurations == null || waveConfigurations.Length == 0 || waveController == null)
+        if (waveConfigurations == null || waveConfigurations.Length == 0 || WaveController == null)
         {
-            Debug.LogError("WaveSpawnManagerExam04: Missing waveConfigurations or waveController");
+            Debug.LogError("WaveSpawnManagerExam04: Missing waveConfigurations or WaveController");
             enabled = false;
             return;
         }
 
         currentWave = 0;
-        waveController.StartWave(waveConfigurations[currentWave]);
+        WaveController.StartWave(waveConfigurations[currentWave]);
         waveEndTime = Time.time + waveConfigurations[currentWave].waveInterval; // ✅ set ให้ wave แรกด้วย
     }
 
@@ -31,7 +31,7 @@ public class WaveSpawnManagerExam04 : MonoBehaviour
             return;
         }
         //if wave time is up and all enemies are spawned, start next wave
-        if (Time.time >= waveEndTime && waveController.IsComplete())
+        if (Time.time >= waveEndTime && WaveController.IsComplete())
         {
             currentWave++;
             if (currentWave >= waveConfigurations.Length)
@@ -49,7 +49,7 @@ public class WaveSpawnManagerExam04 : MonoBehaviour
             }
 
             // เริ่ม wave ใหม่
-            waveController.StartWave(waveConfigurations[currentWave]);
+            WaveController.StartWave(waveConfigurations[currentWave]);
             waveEndTime = Time.time + waveConfigurations[currentWave].waveInterval;
         }
     }
