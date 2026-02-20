@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
     // [8] declare Projectile prefab variable
     public GameObject projectilePrefab;
 
-    private float horizontalInput;
+    //private float horizontalInput;
+    private float verticalInput;
 
     // [1] declare a private InputAction variable
     private InputAction moveAction;
@@ -28,14 +29,30 @@ public class PlayerController : MonoBehaviour
         shootAction = InputSystem.actions.FindAction("Shoot");
     }
 
+    private void OnEnable()
+    {
+        // [9] enable the actions
+        moveAction?.Enable();
+        shootAction?.Enable();
+    }
+
+    private void OnDisable()
+    {
+        // [14] disable the actions
+        moveAction?.Disable();
+        shootAction?.Disable();
+    }
+
     // Update is called once per frame
     void Update()
     {
         // [3] use input system to get horizontal input
-        horizontalInput = moveAction.ReadValue<Vector2>().x;
+        //horizontalInput = moveAction.ReadValue<Vector2>().x;
+        verticalInput = moveAction.ReadValue<Vector2>().y;
 
-        // [4] move the player
-        transform.Translate(horizontalInput * speed * Time.deltaTime * Vector3.right);
+        // [4] move the player up and down
+        //transform.Translate(horizontalInput * speed * Time.deltaTime * Vector3.right);
+        transform.Translate(verticalInput * speed * Time.deltaTime * Vector3.up);
 
         // [5] keep the player inbounds
         // if (transform.position.x < -10)
@@ -51,6 +68,11 @@ public class PlayerController : MonoBehaviour
         if (transform.position.x > xRange)
         {
             transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
+        }
+
+        if (transform.position.y < -xRange)
+        {
+            transform.position = new Vector3(transform.position.x, -xRange, transform.position.z);
         }
 
         // [12] check if the player is shooting

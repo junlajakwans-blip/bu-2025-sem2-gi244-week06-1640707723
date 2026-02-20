@@ -14,11 +14,27 @@ public class PlayerControllerExam03 : MonoBehaviour
     private InputAction moveAction;
     private InputAction shootAction;
 
+    private float nextAutoFireTime = 0f;
+
     private void Awake()
     {
         moveAction = InputSystem.actions.FindAction("Move");
         shootAction = InputSystem.actions.FindAction("Shoot");
     }
+
+    private void OnEnable()
+    {
+        moveAction?.Enable();
+        shootAction?.Enable();
+        nextAutoFireTime = Time.time; // reset timer ตอนเริ่ม
+    }
+
+    private void OnDisable()
+    {
+        moveAction?.Disable();
+        shootAction?.Disable();
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -37,7 +53,23 @@ public class PlayerControllerExam03 : MonoBehaviour
 
         if (shootAction.triggered)
         {
-            Instantiate(projectilePrefab, transform.position, transform.rotation);
+            Fire();
         }
+
+        if (enableAutoFireMode)
+        {
+            // กันค่า interval แปลก ๆ (เช่น 0 หรือติดลบ)
+            float interval = Mathf.Max(0.01f, autoFireInterval);
+
+            if (Time.time >= nextAutoFireTime)
+            {
+                Fire();
+                nextAutoFireTime = Time.time + interval;
+            }
+        }
+    }
+    private void Fire()
+    {
+        Instantiate(projectilePrefab, transform.position, transform.rotation);
     }
 }
